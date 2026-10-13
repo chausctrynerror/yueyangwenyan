@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="zh-HK">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>《岳陽樓記》互動知識挑戰賽</title>
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #2980b9;
+            --accent-color: #e74c3c;
+            --success-color: #27ae60;
+            --bg-color: #f8f9fa;
+            --card-bg: #ffffff;
+            --text-color: #333333;
+        }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: "Microsoft JhengHei", Arial, sans-serif;
+        }
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            padding: 20px;
+        }
+        .container {
+            max-width: 800px;
+            margin: 40px auto;
+            background: var(--card-bg);
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            overflow: hidden;
+        }
+        header {
+            background: var(--primary-color);
+            color: #fff;
+            padding: 24px;
+            text-align: center;
+        }
+        header h1 {
+            font-size: 24px;
+            margin-bottom: 8px;
+        }
+        header p {
+            font-size: 14px;
+            opacity: 0.85;
+        }
+        .content {
+            padding: 30px;
+        }
+        .screen {
+            display: none;
+        }
+        .screen.active {
+            display: block;
+        }
+        .welcome-box {
+            text-align: center;
+            padding: 20px;
+        }
+        .welcome-box h2 {
+            color: var(--primary-color);
+            margin-bottom: 20px;
+        }
+        .form-group {
+            margin-bottom: 24px;
+        }
+        .form-group label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 8px;
+            font-size: 16px;
+        }
+        .form-group input {
+            width: 100%;
+            max-width: 400px;
+            padding: 12px 16px;
+            font-size: 16px;
+            border: 2px solid #bdc3c7;
+            border-radius: 6px;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+        .form-group input:focus {
+            border-color: var(--secondary-color);
+        }
+        .btn {
+            background-color: var(--secondary-color);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            font-size: 18px;
+            font-weight: bold;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background 0.3s, transform 0.1s;
+        }
+        .btn:hover {
+            background-color: #2471a3;
+        }
+        .btn:active {
+            transform: scale(0.98);
+        }
+        .alert {
+            color: var(--accent-color);
+            font-weight: bold;
+            margin-top: 10px;
+            min-height: 24px;
+        }
+        .quiz-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid #ecf0f1;
+            font-weight: bold;
+            color: #7f8c8d;
+        }
+        .question-title {
+            font-size: 18px;
+            color: var(--primary-color);
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+        .options-list {
+            list-style: none;
+            margin-bottom: 30px;
+        }
+        .options-list li {
+            background: #fdfefe;
+            border: 2px solid #e2e8f0;
+            padding: 14px 18px;
+            margin-bottom: 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 16px;
+        }
+        .options-list li:hover {
+            background: #ebf5fb;
+            border-color: var(--secondary-color);
+        }
+        .options-list li.selected {
+            background: #ebf5fb;
+            border-color: var(--secondary-color);
+            font-weight: bold;
+        }
+        .quiz-footer {
+            display: flex;
+            justify-content: flex-end;
+        }
+        .result-box {
+            text-align: center;
+            padding: 20px;
+        }
+        .result-box h2 {
+            color: var(--primary-color);
+            margin-bottom: 20px;
+        }
+        .score-card {
+            background: #ebf5fb;
+            border-radius: 8px;
+            padding: 30px;
+            margin: 20px auto;
+            max-width: 600px;
+            border: 2px solid #a9cce3;
+        }
+        .score-card .report-display {
+            font-size: 24px;
+            color: var(--primary-color);
+            font-weight: bold;
+            margin-bottom: 15px;
+            line-height: 1.5;
+        }
+        .score-card .score-display {
+            font-size: 42px;
+            font-weight: bold;
+            color: var(--secondary-color);
+            margin-bottom: 10px;
+        }
+        .score-card .details-display {
+            font-size: 16px;
+            color: #555;
+            margin-top: 10px;
+        }
+        .review-section {
+            margin-top: 30px;
+            text-align: left;
+        }
+        .review-section h3 {
+            margin-bottom: 15px;
+            color: var(--primary-color);
+        }
+        .review-item {
+            background: #fff;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            padding: 15px;
+            margin-bottom: 10px;
+        }
+        .review-item.correct {
+            border-left: 5px solid var(--success-color);
+        }
+        .review-item.incorrect {
+            border-left: 5px solid var(--accent-color);
+        }
+        .review-q {
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+        .review-ans {
+            font-size: 14px;
+        }
+        .user-ans {
+            color: var(--accent-color);
+        }
+        .correct-ans {
+            color: var(--success-color);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>《岳陽樓記》互動知識挑戰賽</h1>
+            <p>高中文庫複習小幫手 · 寫作手法與文言知識精選題庫</p>
+        </header>
+        <div class="content">
+            <div id="screen-home" class="screen active">
+                <div class="welcome-box">
+                    <h2>歡迎進入《岳陽樓記》挑戰賽</h2>
+                    <p style="margin-bottom: 25px; color: #666;">本遊戲從 100 道題庫中隨機抽選 20 道題目（每題 5 分，總分 100 分），你們就盡力掙扎吧！哈哈哈哈哈哈哈哈！</p>
+                    <div class="form-group">
+                        <label for="player-name">請輸入您的姓名：</label>
+                        <input type="text" id="player-name" placeholder="例如：陳大文" autocomplete="off">
+                        <div id="name-alert" class="alert"></div>
+                    </div>
+                    <button class="btn" id="start-btn">開始遊戲</button>
+                </div>
+            </div>
+
+            <div id="screen-quiz" class="screen">
+                <div class="quiz-header">
+                    <span id="question-counter">題目 1 / 20</span>
+                    <span id="timer-display">用時：00:00</span>
+                    <span id="score-tracker">當前得分：0 分</span>
+                </div>
+                <div id="question-container">
+                    <div class="question-title" id="question-text">題目載入中...</div>
+                    <ul class="options-list" id="options-list">
+                    </ul>
+                </div>
+                <div class="quiz-footer">
+                    <button class="btn" id="next-btn" disabled>下一題</button>
+                </div>
+            </div>
+
+            <div id="screen-result" class="screen">
+                <div class="result-box">
+                    <h2>挑戰結算畫面</h2>
+                    <div class="score-card">
+                        <div class="report-display" id="result-report">報告老師！我某某在這個挑戰中得到了 0分！</div>
+                        <div class="score-display" id="result-score">0 分</div>
+                        <div class="details-display" id="result-details">答對 0 題 / 共 20 題</div>
+                        <div class="details-display" id="timer-details" style="font-weight: bold; color: #e67e22; margin-top: 8px;">總用時：0 分 0 秒</div>
+                    </div>
+                    <button class="btn" id="restart-btn" style="margin-bottom: 30px;">重新挑戰</button>
+                    
+                    <div class="review-section">
+                        <h3>答題檢討與正確答案</h3>
+                        <div id="review-list">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const allQuestions = [{"q": "《岳陽樓記》中「虎嘯猿啼」運用了甚麼感官描寫？", "options": ["聽覺描寫", "嗅覺描寫", "視覺描寫", "觸覺描寫"], "ans": 0}, {"q": "「虎嘯猿啼」在文中主要渲染了甚麼氣氛？", "options": ["陰雨天時的蕭瑟氣氛", "熱鬧喧嘩的市集氣氛", "清朗月夜的寧靜氣氛", "春光明媚的歡樂氣氛"], "ans": 0}, {"q": "《岳陽樓記》中「濁浪排空，日星隱耀」運用了甚麼感官描寫？", "options": ["味覺描寫", "嗅覺描寫", "聽覺描寫", "視覺描寫"], "ans": 3}, {"q": "「濁浪排空」一句使用了甚麼修辭手法來突顯天氣惡劣？", "options": ["對偶手法", "排比手法", "擬人手法", "誇張手法"], "ans": 3}, {"q": "「岸芷汀蘭，郁郁青青」運用了甚麼感官描寫？", "options": ["嗅覺描寫", "聽覺描寫", "視覺描寫", "觸覺描寫"], "ans": 0}, {"q": "「岸芷汀蘭，郁郁青青」給讀者甚麼感受？", "options": ["天氣陰森恐怖", "四周環境清幽", "商旅無法行走", "湖面風浪極大"], "ans": 1}, {"q": "以「濁浪排空」描寫在大風時的水勢，屬於甚麼描寫方式？", "options": ["直接描寫", "間接描寫", "動態描寫", "靜態描寫"], "ans": 2}, {"q": "文中以甚麼來描寫月亮映照湖面的光芒？", "options": ["長煙一空", "濁浪排空", "日星隱耀", "浮光躍金"], "ans": 3}, {"q": "以「長煙一空，皓月千里」描寫清朗的月夜，屬於甚麼描寫？", "options": ["聽覺描寫", "動態描寫", "靜態描寫", "誇張描寫"], "ans": 2}, {"q": "文中以甚麼描寫明月映入平靜湖水的倒影，如璧玉般顯出月夜閒靜？", "options": ["靜影沉璧", "浮光躍金", "虎嘯猿啼", "濁浪排空"], "ans": 0}, {"q": "「春和景明，波瀾不驚，上下天光，一碧萬頃」屬於甚麼描寫？", "options": ["聽覺描寫", "直接描寫", "動態描寫", "間接描寫"], "ans": 1}, {"q": "直接描寫岳陽樓風和日麗、天朗氣清之景的句子是甚麼？", "options": ["濁浪排空，日星隱耀", "長煙一空，皓月千里", "霪雨霏霏，陰風怒號", "春和景明，波瀾不驚"], "ans": 3}, {"q": "「商旅不行，檣傾楫摧」屬於甚麼描寫？", "options": ["靜態描寫", "直接描寫", "嗅覺描寫", "間接描寫"], "ans": 3}, {"q": "「商旅不行，檣傾楫摧」間接描寫了甚麼？", "options": ["天氣惡劣、風浪極大", "春光明媚、鳥語花香", "月夜清朗、水面平靜", "商旅生意興隆繁華"], "ans": 0}, {"q": "《岳陽樓記》中遷客.騷人覽物而悲與古仁人不以物喜的對比，屬於甚麼維度？", "options": ["感情與價值觀對比", "氣候明暗對比", "動植物繁簡對比", "建築規模對比"], "ans": 0}, {"q": "文中氣候對比中，與「霪雨霏霏、陰風怒號」相對的是甚麼？", "options": ["日星隱耀", "薄暮冥冥", "濁浪排空", "春和景明"], "ans": 3}, {"q": "文中光線對比中，與「連月不開、日星隱耀」相對的是甚麼？", "options": ["虎嘯猿啼", "岸芷汀蘭", "上下天光", "沙鷗翔集"], "ans": 2}, {"q": "文中湖面狀況對比中，與「濁浪排空」相對的是甚麼？", "options": ["浮光躍金，靜影沉璧", "長煙一空，皓月千里", "商旅不行，檣傾楫摧", "波瀾不驚，一碧萬頃"], "ans": 3}, {"q": "文中人物活動對比中，與「商旅不行，檣傾楫摧」相對的是甚麼？", "options": ["感極而悲者矣", "漁歌互答，此樂何極", "去國懷鄉，憂讒畏譏", "心曠神怡，寵辱偕忘"], "ans": 1}, {"q": "文中動植物描寫對比中，與「虎嘯猿啼」相對的是甚麼？", "options": ["沙鷗翔集，錦鱗游泳", "陰風怒號，薄暮冥冥", "去國懷鄉，滿目蕭然", "商旅不行，檣傾楫摧"], "ans": 0}, {"q": "「屬予作文以記之」中的「以」字意思是甚麼？", "options": ["憑藉", "因為", "按照", "來（表目的）"], "ans": 3}, {"q": "「不以物喜，不以己悲」中的「以」字意思是甚麼？", "options": ["用", "因為", "來", "把"], "ans": 1}, {"q": "「予觀夫巴陵勝狀」中的「夫」字意思是甚麼？", "options": ["那（指示代詞）", "表感嘆助詞", "成年人", "丈夫、男子"], "ans": 0}, {"q": "「嗟夫！予嘗求古仁人之心」中的「夫」字用法是甚麼？", "options": ["指示代詞解作那", "表句尾/句中感嘆", "名詞解作丈夫", "動詞解作幫助"], "ans": 1}, {"q": "「予觀夫巴陵勝狀」中的「觀」字意思是甚麼？", "options": ["景象、景色", "看、觀賞", "觀察研究", "廟宇樓台"], "ans": 1}, {"q": "「此則岳陽樓之大觀也」中的「觀」字意思是甚麼？", "options": ["景象、大觀", "觀念看法", "道觀建築", "觀看、欣賞"], "ans": 0}, {"q": "「北通巫峽，南極瀟湘」中的第一個「極」字意思是甚麼？", "options": ["極點限度", "窮盡、到達", "程度最深", "北極中心"], "ans": 1}, {"q": "「感極而悲者矣」中的「極」字意思是甚麼？", "options": ["表示程度極深", "窮盡、盡頭", "南北極點", "標準極限"], "ans": 0}, {"q": "「或異二者之為」中的「或」字意思是甚麼？", "options": ["或許、也許", "某人某事", "有時、或者", "或者……或者"], "ans": 0}, {"q": "「而或長煙一空」中的「或」字意思是甚麼？", "options": ["或者", "如果", "有時", "或許"], "ans": 2}, {"q": "「濁浪排空」中的「空」字意思是甚麼？", "options": ["消散、排盡", "空虛、貧乏", "空間位置", "天空、高空"], "ans": 3}, {"q": "「長煙一空」中的「空」字意思是甚麼？", "options": ["天空、高空", "完全空無", "空間清空", "消散、散盡"], "ans": 3}, {"q": "「政通人和」中的「通」字意思是甚麼？", "options": ["貫通連接", "通向、到達", "順利、通暢", "通曉明白"], "ans": 2}, {"q": "「北通巫峽，南極瀟湘」中的「通」字意思是甚麼？", "options": ["全部貫通", "通向、連接", "順利通暢", "互相溝通"], "ans": 1}, {"q": "「政通人和」中的「和」字意思是甚麼？", "options": ["和煦溫暖", "和解平息", "隨聲附和", "和樂、融洽"], "ans": 3}, {"q": "「至若春和景明」中的「和」字意思是甚麼？", "options": ["附和諧調", "和煦、溫和", "和平安寧", "和樂融洽"], "ans": 1}, {"q": "「居廟堂之高」中的「居」字意思是甚麼？", "options": ["擔任官職", "居住生活", "處在、身處", "停留不動"], "ans": 2}, {"q": "「不可久居」中的「居」字意思是甚麼？", "options": ["身處高位", "居家過日子", "停留、居住", "積聚存留"], "ans": 2}, {"q": "「一碧萬頃」中的「一」字意思是甚麼？", "options": ["專一不變", "數目字一", "全、一片", "第一次的"], "ans": 2}, {"q": "「長煙一空」中的「一」字意思是甚麼？", "options": ["滿地都是", "一致相同", "一個單位", "全、都"], "ans": 3}, {"q": "「連月不開」中的「開」字意思是甚麼？", "options": ["開設設置", "放晴、消散", "打開門窗", "開始啟動"], "ans": 1}, {"q": "「開我東閣門」中的「開」字意思是甚麼？", "options": ["開設", "打開", "出發", "放晴"], "ans": 1}, {"q": "「旁開小窗」中的「開」字意思是甚麼？", "options": ["打開門扇", "天氣放晴", "開始發展", "開設、設置"], "ans": 3}, {"q": "「然則何時而樂耶」中的「則」字意思是甚麼？", "options": ["卻是轉折", "就是判斷", "那麼、就", "規則法度"], "ans": 2}, {"q": "「此則岳陽樓之大觀也」中的「則」字意思是甚麼？", "options": ["規則條例", "就是（表判斷）", "那麼、就", "卻是然而"], "ans": 1}, {"q": "「居廟堂之高則憂其民」中的「則」字意思是甚麼？", "options": ["規章法則", "就、便", "就是判斷", "卻是轉折"], "ans": 1}, {"q": "「或異二者之為」中的「為」字意思是甚麼？", "options": ["成為、變成", "介詞被動", "行為、心理活動", "作為、製作"], "ans": 2}, {"q": "「屬予作文以記之」中的「屬」字意思是甚麼？", "options": ["類別種屬", "通「囑」，囑託", "下屬部下", "連接相屬"], "ans": 1}, {"q": "「屬引淒異」中的「屬」字意思是甚麼？", "options": ["連接、連續", "類別親屬", "囑託委派", "歸屬所屬"], "ans": 0}, {"q": "「有良田美池桑竹之屬」中的「屬」字意思是甚麼？", "options": ["連接相屬", "囑託吩咐", "部屬下級", "類別、等"], "ans": 3}, {"q": "「百廢具興」中的「廢」字在詞類上屬於甚麼現象？", "options": ["名詞作狀語", "動詞作名詞（荒廢了的事業）", "名詞作動詞", "形容詞作動詞"], "ans": 1}, {"q": "「先天下之憂而憂」中的「先」字在詞類上屬於甚麼現象？", "options": ["動詞作名詞", "形容詞作動詞", "名詞作動詞", "名詞作狀語（在……之前）"], "ans": 3}, {"q": "「後天下之樂而樂」中的「後」字在詞類上屬於甚麼現象？", "options": ["形容詞作動詞", "動詞作名詞", "名詞作動詞", "名詞作狀語（在……之後）"], "ans": 3}, {"q": "「滕子京謫守巴陵郡」中的「謫」字在詞類上屬於甚麼現象？", "options": ["動詞作形容詞（被貶謫的）", "名詞作狀語", "名詞作動詞", "形容詞作名詞"], "ans": 0}, {"q": "「憂讒畏譏」中的「讒」字在詞類上屬於甚麼現象？", "options": ["名詞作動詞（說壞話、進讒言）", "動詞作名詞", "形容詞作動詞", "名詞作狀語"], "ans": 0}, {"q": "「刻唐賢今人詩賦於其上」中的「賢」字在詞類上屬於甚麼現象？", "options": ["名詞作動詞", "形容詞作名詞（賢明之人）", "動詞作名詞", "名詞作狀語"], "ans": 1}, {"q": "「錦鱗游泳」中的「錦鱗」在修辭上是指甚麼？", "options": ["用錦鱗借代魚群", "指湖中的波浪", "指美麗的蛇類", "指精美的鱗甲裝飾"], "ans": 0}, {"q": "「而或長煙一空」中的「空」字在詞類上屬於甚麼現象？", "options": ["名詞作狀語", "形容詞作動詞（消散）", "名詞作動詞", "動詞作名詞"], "ans": 1}, {"q": "「北通巫峽，南極瀟湘」中的「北」和「南」字屬於甚麼詞類活用？", "options": ["名詞作動詞", "名詞作狀語（向北、向南）", "形容詞作動詞", "動詞作名詞"], "ans": 1}, {"q": "「或異二者之為」中的「為」字在詞類上屬於甚麼現象？", "options": ["形容詞作名詞", "名詞作動詞", "名詞作狀語", "動詞作名詞（這裡指心理活動）"], "ans": 3}, {"q": "「朝暉夕陰」中的「朝」和「夕」屬於甚麼詞類活用？", "options": ["名詞作動詞", "形容詞作動詞", "名詞作狀語（在早晨、在傍晚）", "動詞作名詞"], "ans": 2}, {"q": "「氣象萬千」中的「氣象」在文中的古義是指甚麼？", "options": ["景象、氣勢", "人的精神面貌", "天氣狀況變化", "氣壓與風向"], "ans": 0}, {"q": "「微斯人，吾誰與歸」中的「微」字意思是甚麼？", "options": ["如果沒有", "微小輕微", "稍微有點", "秘密暗中"], "ans": 0}, {"q": "「此則岳陽樓之大觀也」中的「大觀」古義是指甚麼？", "options": ["盛大的典禮", "廣大的遊覽觀光", "雄偉的景象", "宏大的觀念"], "ans": 2}, {"q": "「橫無際涯」中的「橫」字古義是指甚麼？", "options": ["橫行霸道", "廣遠、寬廣", "橫向阻擋", "與豎相對"], "ans": 1}, {"q": "「濁浪排空」中的「排空」古義是指甚麼？", "options": ["完全清除排空", "排隊進入高空", "騰空飛起", "沖向天空"], "ans": 3}, {"q": "「予觀夫巴陵勝狀」中的「夫」字作甚麼解？", "options": ["助詞無義", "成年男子丈夫", "指示代詞，相當於「那」", "發語感嘆辭"], "ans": 2}, {"q": "「前人之述備矣」中的「備」字古義是指甚麼？", "options": ["設備齊全", "防備戒備", "準備妥當", "詳盡、完備"], "ans": 3}, {"q": "「增其舊制」中的「制」字古義是指甚麼？", "options": ["規模、格局", "法律制度", "製作方法", "限制約束"], "ans": 0}, {"q": "「至若春和景明」中的「景」字古義是指甚麼？", "options": ["景色、景物", "日光、陽光", "前景未來", "影象影子"], "ans": 1}, {"q": "「則有去國懷鄉」中的「去國」古義是指甚麼？", "options": ["離開國家去外地", "國家宣佈獨立", "離開國都", "去參觀國家"], "ans": 2}, {"q": "「則有去國懷鄉」中的「去」字古義是指甚麼？", "options": ["除掉", "離開", "過去", "前往"], "ans": 1}, {"q": "「予嘗求古仁人之心」中的「嘗」字古義是指甚麼？", "options": ["嘗試體驗", "品嘗滋味", "曾經", "經常不斷"], "ans": 2}, {"q": "「越明年」中的「越」字古義是指甚麼？", "options": ["越過跨越", "更加厲害", "超越勝過", "及、到"], "ans": 3}, {"q": "「寵辱偕忘」中的「寵」字古義是指甚麼？", "options": ["榮耀、恩寵", "寵物動物", "驕傲自大", "寵愛嬌慣"], "ans": 0}, {"q": "「沙鷗翔集」中的「集」字古義是指甚麼？", "options": ["收集匯集", "市場集市", "集合集體", "群鳥停息在樹上或沙洲"], "ans": 3}, {"q": "「進亦憂，退亦憂」中的「進」字古義是指甚麼？", "options": ["晉升職位", "進口購買", "向前進攻", "在朝廷做官"], "ans": 3}, {"q": "「進亦憂，退亦憂」中的「退」字古義是指甚麼？", "options": ["向後退卻", "退休養老", "不在朝廷做官（退居江湖）", "退貨拒絕"], "ans": 2}, {"q": "「屬予作文以記之」中的「屬」字是甚麼通假字？", "options": ["通「俱」，全部", "通「著」，寫作", "通「囑」，囑託", "通「召」，召集"], "ans": 2}, {"q": "「百廢具興」中的「具」字是甚麼通假字？", "options": ["通「據」，根據", "通「具」，器具", "通「俱」，都、全部", "通「聚」，聚集"], "ans": 2}, {"q": "「微斯人，吾誰與歸」屬於甚麼文言句式？", "options": ["省略句", "賓語前置句（疑問代詞「誰」前置）", "判斷句", "狀語後置句"], "ans": 1}, {"q": "「此則岳陽樓之大觀也」屬於甚麼文言句式？", "options": ["被動句", "省略句", "倒裝句", "判斷句（「……也」表判斷）"], "ans": 3}, {"q": "「屬予作文以記之」在句法上省略了甚麼成分？", "options": ["省略介詞「於」", "省略動詞「記」", "省略賓語「之」", "省略主語「滕子京」"], "ans": 3}, {"q": "下列哪一句名言出自《岳陽樓記》第5段，體現了博大的政治胸襟？", "options": ["窮則獨善其身，達則兼善天下", "先天下之憂而憂，後天下之樂而樂", "位卑未敢忘憂國", "先天下之樂而樂，後天下之憂而憂"], "ans": 1}, {"q": "「不以物喜，不以己悲」中「物」的意思是指甚麼？", "options": ["外物（環境、客觀遭遇）", "物質財富", "物品道具", "動物生物"], "ans": 0}, {"q": "「居廟堂之高，則憂其民」中的「廟堂」借代指甚麼？", "options": ["寺廟宗祠", "朝廷", "高大房屋", "學校講堂"], "ans": 1}, {"q": "「處江湖之遠，則憂其君」中的「江湖」借代指甚麼？", "options": ["漁民生活環境", "民間、遠離朝廷的地方", "山林隱士住所", "江河湖海"], "ans": 1}, {"q": "《岳陽樓記》作者范仲淹被貶謫到甚麼地方任職？", "options": ["鄧州（文中滕子京被謫守巴陵郡）", "杭州", "黃州", "蘇州"], "ans": 0}, {"q": "《岳陽樓記》是范仲淹應誰之請而作的？", "options": ["劉鶚", "王安石", "歐陽修", "滕子京"], "ans": 3}, {"q": "《岳陽樓記》全文的主旨是要宣揚甚麼精神？", "options": ["功成名就、追求個人榮華富貴", "吃苦在前、享樂在後與憂國憂民的崇高抱負", "寄情山水、及時行樂的人生哲學", "獨善其身、不問世事的隱逸思想"], "ans": 1}];
+
+        let playerName = "";
+        let selectedQuestions = [];
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let userAnswers = [];
+
+        let startTime = null;
+        let timerInterval = null;
+        let finalElapsedSeconds = 0;
+
+        const screenHome = document.getElementById("screen-home");
+        const screenQuiz = document.getElementById("screen-quiz");
+        const screenResult = document.getElementById("screen-result");
+
+        const playerNameInput = document.getElementById("player-name");
+        const nameAlert = document.getElementById("name-alert");
+        const startBtn = document.getElementById("start-btn");
+
+        const questionCounter = document.getElementById("question-counter");
+        const scoreTracker = document.getElementById("score-tracker");
+        const timerDisplay = document.getElementById("timer-display");
+        const questionText = document.getElementById("question-text");
+        const optionsList = document.getElementById("options-list");
+        const nextBtn = document.getElementById("next-btn");
+
+        const resultReport = document.getElementById("result-report");
+        const resultScore = document.getElementById("result-score");
+        const resultDetails = document.getElementById("result-details");
+        const timerDetails = document.getElementById("timer-details");
+        const restartBtn = document.getElementById("restart-btn");
+        const reviewList = document.getElementById("review-list");
+
+        startBtn.addEventListener("click", () => {
+            playerName = playerNameInput.value.trim();
+            if (!playerName) {
+                nameAlert.textContent = "請先輸入姓名。";
+                playerNameInput.focus();
+                return;
+            }
+            nameAlert.textContent = "";
+            startGame();
+        });
+
+        playerNameInput.addEventListener("keypress", (e) => {
+            if (e.key === "Enter") {
+                startBtn.click();
+            }
+        });
+
+        function startGame() {
+            let shuffled = [...allQuestions].sort(() => 0.5 - Math.random());
+            selectedQuestions = shuffled.slice(0, 20);
+            currentQuestionIndex = 0;
+            score = 0;
+            userAnswers = [];
+
+            screenHome.classList.remove("active");
+            screenQuiz.classList.add("active");
+
+            startTime = Date.now();
+            if (timerInterval) clearInterval(timerInterval);
+            timerInterval = setInterval(updateTimer, 1000);
+
+            loadQuestion();
+        }
+
+        function updateTimer() {
+            let elapsedSec = Math.floor((Date.now() - startTime) / 1000);
+            let mins = Math.floor(elapsedSec / 60);
+            let secs = elapsedSec % 60;
+            timerDisplay.textContent = `用時：${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+        }
+
+        let currentSelectedOption = null;
+
+        function loadQuestion() {
+            currentSelectedOption = null;
+            nextBtn.disabled = true;
+
+            let qObj = selectedQuestions[currentQuestionIndex];
+            questionCounter.textContent = `題目 ${currentQuestionIndex + 1} / 20`;
+            scoreTracker.textContent = `當前得分：${score} 分`;
+            questionText.textContent = `${currentQuestionIndex + 1}. ${qObj.q}`;
+
+            optionsList.innerHTML = "";
+            qObj.options.forEach((opt, idx) => {
+                let li = document.createElement("li");
+                li.textContent = `${String.fromCharCode(65 + idx)}. ${opt}`;
+                li.dataset.index = idx;
+                li.addEventListener("click", () => {
+                    document.querySelectorAll(".options-list li").forEach(el => el.classList.remove("selected"));
+                    li.classList.add("selected");
+                    currentSelectedOption = idx;
+                    nextBtn.disabled = false;
+                });
+                optionsList.appendChild(li);
+            });
+        }
+
+        nextBtn.addEventListener("click", () => {
+            if (currentSelectedOption === null) return;
+
+            let qObj = selectedQuestions[currentQuestionIndex];
+            let isCorrect = (currentSelectedOption === qObj.ans);
+            if (isCorrect) {
+                score += 5;
+            }
+
+            userAnswers.push({
+                question: qObj.q,
+                options: qObj.options,
+                selected: currentSelectedOption,
+                correct: qObj.ans,
+                isCorrect: isCorrect
+            });
+
+            currentQuestionIndex++;
+            if (currentQuestionIndex < 20) {
+                loadQuestion();
+            } else {
+                clearInterval(timerInterval);
+                finalElapsedSeconds = Math.floor((Date.now() - startTime) / 1000);
+                showResult();
+            }
+        });
+
+        function showResult() {
+            screenQuiz.classList.remove("active");
+            screenResult.classList.add("active");
+
+            resultReport.textContent = `報告老師！我「${playerName}」在這個挑戰中得到了「${score}分」！`;
+            resultScore.textContent = `${score} 分`;
+            let correctCount = userAnswers.filter(ans => ans.isCorrect).length;
+            resultDetails.textContent = `答對 ${correctCount} 題 / 共 20 題 (正確率 ${correctCount * 5}%)`;
+
+            let mins = Math.floor(finalElapsedSeconds / 60);
+            let secs = finalElapsedSeconds % 60;
+            timerDetails.textContent = `總用時：${mins} 分 ${secs} 秒`;
+
+            reviewList.innerHTML = "";
+            userAnswers.forEach((ans, idx) => {
+                let itemDiv = document.createElement("div");
+                itemDiv.className = `review-item ${ans.isCorrect ? 'correct' : 'incorrect'}`;
+                
+                let qDiv = document.createElement("div");
+                qDiv.className = "review-q";
+                qDiv.textContent = `Q${idx + 1}: ${ans.question}`;
+                
+                let ansDiv = document.createElement("div");
+                ansDiv.className = "review-ans";
+                
+                let userOptText = ans.selected !== null ? `${String.fromCharCode(65 + ans.selected)}. ${ans.options[ans.selected]}` : "未作答";
+                let correctOptText = `${String.fromCharCode(65 + ans.correct)}. ${ans.options[ans.correct]}`;
+
+                ansDiv.innerHTML = `您的選擇：<span class="user-ans">${userOptText}</span> | 正確答案：<span class="correct-ans">${correctOptText}</span>`;
+
+                itemDiv.appendChild(qDiv);
+                itemDiv.appendChild(ansDiv);
+                reviewList.appendChild(itemDiv);
+            });
+        }
+
+        restartBtn.addEventListener("click", () => {
+            screenResult.classList.remove("active");
+            screenHome.classList.add("active");
+            playerNameInput.value = "";
+            playerNameInput.focus();
+        });
+    </script>
+</body>
+</html>
